@@ -10,7 +10,7 @@ const SHOULDER_Y = 2.14
 const NECK_R = 0.14
 const NECK_TOP = 2.58
 const CAP_R = 0.252
-const CAP_TOP = 2.935
+const CAP_TOP = 2.875
 
 const buildBodyGeometry = () => {
   const pts = [
@@ -43,13 +43,15 @@ const buildBodyGeometry = () => {
 
 const buildCapGeometry = () => {
   const pts = [
+    // chamfered underside so the overhang doesn't read as a bright brim
     new THREE.Vector2(0, NECK_TOP + 0.005),
-    new THREE.Vector2(CAP_R - 0.03, NECK_TOP + 0.005),
-    new THREE.Vector2(CAP_R, NECK_TOP + 0.02),
-    new THREE.Vector2(CAP_R, CAP_TOP - 0.075),
-    new THREE.Vector2(CAP_R - 0.008, CAP_TOP - 0.045),
-    new THREE.Vector2(CAP_R - 0.03, CAP_TOP - 0.018),
-    new THREE.Vector2(CAP_R - 0.075, CAP_TOP - 0.004),
+    new THREE.Vector2(NECK_R + 0.02, NECK_TOP + 0.005),
+    new THREE.Vector2(CAP_R - 0.02, NECK_TOP + 0.012),
+    new THREE.Vector2(CAP_R, NECK_TOP + 0.03),
+    new THREE.Vector2(CAP_R, CAP_TOP - 0.055),
+    new THREE.Vector2(CAP_R - 0.01, CAP_TOP - 0.03),
+    new THREE.Vector2(CAP_R - 0.035, CAP_TOP - 0.012),
+    new THREE.Vector2(CAP_R - 0.06, CAP_TOP - 0.003),
     new THREE.Vector2(0, CAP_TOP),
   ]
   return new THREE.LatheGeometry(pts, 128)
@@ -75,7 +77,6 @@ const makeBrushedTexture = () => {
 
 export const Bottle3D = ({ reduceMotion = false }) => {
   const groupRef = useRef()
-  const pointer = useRef({ x: 0, y: 0 })
 
   const bodyGeometry = useMemo(buildBodyGeometry, [])
   const capGeometry = useMemo(buildCapGeometry, [])
@@ -85,11 +86,11 @@ export const Bottle3D = ({ reduceMotion = false }) => {
     () =>
       new THREE.MeshPhysicalMaterial({
         color: '#1b1b1e',
-        roughness: 0.58,
+        roughness: 0.62,
         metalness: 0.3,
-        clearcoat: 0.22,
+        clearcoat: 0.18,
         clearcoatRoughness: 0.55,
-        envMapIntensity: 0.75,
+        envMapIntensity: 0.65,
       }),
     [],
   )
@@ -118,16 +119,6 @@ export const Bottle3D = ({ reduceMotion = false }) => {
     [],
   )
 
-  useEffect(() => {
-    if (reduceMotion) return undefined
-    const onMove = (event) => {
-      pointer.current.x = (event.clientX / window.innerWidth) * 2 - 1
-      pointer.current.y = (event.clientY / window.innerHeight) * 2 - 1
-    }
-    window.addEventListener('pointermove', onMove, { passive: true })
-    return () => window.removeEventListener('pointermove', onMove)
-  }, [reduceMotion])
-
   useEffect(
     () => () => {
       bodyGeometry.dispose()
@@ -140,20 +131,15 @@ export const Bottle3D = ({ reduceMotion = false }) => {
     [bodyGeometry, capGeometry, brushedMap, bodyMaterial, capMaterial, ringMaterial],
   )
 
-  useFrame((state, delta) => {
+  // Gentle idle bob; orbiting the bottle is handled by OrbitControls in SceneSetup.
+  useFrame((state) => {
     const group = groupRef.current
     if (!group) return
     if (reduceMotion) {
-      group.rotation.set(0, 0.18, 0)
       group.position.y = -1.42
       return
     }
-    const t = state.clock.elapsedTime
-    const targetY = 0.14 + pointer.current.x * 0.5 + Math.sin(t * 0.45) * 0.05
-    const targetX = pointer.current.y * 0.12
-    group.rotation.y = THREE.MathUtils.damp(group.rotation.y, targetY, 3.2, delta)
-    group.rotation.x = THREE.MathUtils.damp(group.rotation.x, targetX, 3.2, delta)
-    group.position.y = -1.42 + Math.sin(t * 1.25) * 0.05
+    group.position.y = -1.42 + Math.sin(state.clock.elapsedTime * 1.25) * 0.05
   })
 
   return (

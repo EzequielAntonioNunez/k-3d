@@ -51,9 +51,7 @@ export const HeroFooter = () => {
       </p>
       <a className="discover-more" href="#discover" aria-label={t('footer.discoverAria')}>
         <span>
-          {t('footer.discover1')}
-          <br />
-          {t('footer.discover2')}
+          {t('footer.discover1')} {t('footer.discover2')}
         </span>
         <ArrowIcon />
       </a>

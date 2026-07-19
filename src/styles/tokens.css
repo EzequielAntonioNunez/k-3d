@@ -1,7 +1,7 @@
 :root {
   /* ── Color ─────────────────────────────────────────────── */
   --color-page: #ededed; /* outer page background            */
-  --color-card: #f3f4f6; /* hero card background             */
+  --color-card: #eef0f3; /* hero card background             */
   --color-surface: #ffffff; /* pills / circular buttons       */
   --color-ink: #111112; /* headings, logo, primary text     */
   --color-ink-soft: #1c1d1f; /* dark buttons                   */
@@ -23,9 +23,9 @@
 
   /* Fluid type scale (reference: 1470px-wide canvas) */
   --text-nav: clamp(0.7rem, 1.7vw, 1.6rem);
-  --text-logo: clamp(0.95rem, 1.75vw, 1.65rem);
-  --text-h1: clamp(1.9rem, 6.05vw, 5.55rem);
-  --text-body: clamp(0.68rem, 1.29vw, 1.2rem);
+  --text-logo: clamp(0.95rem, 1.9vw, 1.9rem);
+  --text-h1: clamp(1.9rem, 5.15vw, 4.75rem);
+  --text-body: clamp(0.68rem, 1.1vw, 1.05rem);
   --text-small: clamp(0.62rem, 1.22vw, 1.12rem);
   --text-cta: clamp(0.68rem, 1.5vw, 1.4rem);
   --text-list-title: clamp(0.8rem, 1.8vw, 1.7rem);
@@ -41,7 +41,7 @@
   /* Page rhythm derived from the reference proportions */
   --card-inset: clamp(0.75rem, 4.1vw, 3.75rem); /* page → card margin   */
   --card-pad-x: clamp(1.5rem, 10.5vw, 9.5rem); /* card inner padding x */
-  --card-pad-top: clamp(1.25rem, 6.8vh, 4.6rem); /* card → header        */
+  --card-pad-top: clamp(1.25rem, 5.6vh, 4rem); /* card → header        */
   --card-pad-bottom: clamp(1rem, 4.2vh, 2.9rem); /* footer → card bottom */
 
   /* ── Shape ─────────────────────────────────────────────── */

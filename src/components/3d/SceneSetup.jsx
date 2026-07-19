@@ -1,7 +1,8 @@
-import { ContactShadows, Environment, Lightformer } from '@react-three/drei'
+import { ContactShadows, Environment, Lightformer, OrbitControls } from '@react-three/drei'
 import { Canvas } from '@react-three/fiber'
 import { useReducedMotion } from 'framer-motion'
 import { Suspense, useEffect, useState } from 'react'
+import { useTranslation } from 'react-i18next'
 import { isWebGLAvailable } from '../../lib/webgl'
 import { Bottle3D } from './Bottle3D'
 import { SceneFallback } from './SceneFallback'
@@ -10,6 +11,7 @@ export const SceneSetup = () => {
   const [webgl] = useState(isWebGLAvailable)
   const [ready, setReady] = useState(false)
   const reduceMotion = useReducedMotion()
+  const { t } = useTranslation()
 
   // Defer the WebGL init until after first paint to protect LCP/TBT.
   useEffect(() => {
@@ -27,7 +29,7 @@ export const SceneSetup = () => {
   }
 
   return (
-    <div className="scene-canvas" aria-hidden="true">
+    <div className="scene-canvas" role="img" aria-label={t('scene.interactive')}>
       <Canvas
         shadows
         dpr={[1, 2]}
@@ -36,7 +38,8 @@ export const SceneSetup = () => {
       >
         <ambientLight intensity={0.5} />
         <Suspense fallback={null}>
-          <group scale={1.42}>
+          {/* Scaled up and offset so the bottle base stays pinned on the shadow */}
+          <group scale={1.52} position={[0, 0.054, 0]}>
             <Bottle3D reduceMotion={reduceMotion} />
           </group>
           {/* Local studio environment — no network fetches */}
@@ -77,6 +80,17 @@ export const SceneSetup = () => {
           resolution={512}
           color="#0a0a0a"
           frames={reduceMotion ? 1 : Number.POSITIVE_INFINITY}
+        />
+        {/* Drag to orbit the bottle; zoom/pan stay disabled to protect the layout */}
+        <OrbitControls
+          makeDefault
+          enableDamping
+          dampingFactor={0.08}
+          rotateSpeed={0.9}
+          enableZoom={false}
+          enablePan={false}
+          minPolarAngle={Math.PI / 2 - 0.85}
+          maxPolarAngle={Math.PI / 2 + 0.4}
         />
       </Canvas>
     </div>
