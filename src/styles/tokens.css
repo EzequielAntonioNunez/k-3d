@@ -1,0 +1,65 @@
+:root {
+  /* ── Color ─────────────────────────────────────────────── */
+  --color-page: #ededed; /* outer page background            */
+  --color-card: #f3f4f6; /* hero card background             */
+  --color-surface: #ffffff; /* pills / circular buttons       */
+  --color-ink: #111112; /* headings, logo, primary text     */
+  --color-ink-soft: #1c1d1f; /* dark buttons                   */
+  --color-muted: #828282; /* secondary copy                   */
+  --color-muted-light: #9b9b9b; /* tertiary copy (list subs)  */
+  --color-hairline: #e3e4e6; /* dividers                       */
+  --color-dot: #c9c9c9; /* inactive slider dots               */
+  --color-dot-active: #f2f2f2; /* active slider dot            */
+  --color-on-dark: #f5f5f5; /* text on dark buttons           */
+  --color-focus: #111112; /* focus ring                       */
+
+  /* ── Type ──────────────────────────────────────────────── */
+  --font-base: "Poppins", system-ui, -apple-system, "Segoe UI", sans-serif;
+  --weight-regular: 400;
+  --weight-medium: 500;
+  --weight-semibold: 600;
+  --weight-bold: 700;
+  --weight-extrabold: 800;
+
+  /* Fluid type scale (reference: 1470px-wide canvas) */
+  --text-nav: clamp(0.7rem, 1.7vw, 1.6rem);
+  --text-logo: clamp(0.95rem, 1.75vw, 1.65rem);
+  --text-h1: clamp(1.9rem, 6.05vw, 5.55rem);
+  --text-body: clamp(0.68rem, 1.29vw, 1.2rem);
+  --text-small: clamp(0.62rem, 1.22vw, 1.12rem);
+  --text-cta: clamp(0.68rem, 1.5vw, 1.4rem);
+  --text-list-title: clamp(0.8rem, 1.8vw, 1.7rem);
+  --text-list-sub: clamp(0.6rem, 1.09vw, 1.05rem);
+
+  /* ── Spacing ───────────────────────────────────────────── */
+  --space-1: 0.25rem;
+  --space-2: 0.5rem;
+  --space-3: 0.75rem;
+  --space-4: 1rem;
+  --space-6: 1.5rem;
+  --space-8: 2rem;
+  /* Page rhythm derived from the reference proportions */
+  --card-inset: clamp(0.75rem, 4.1vw, 3.75rem); /* page → card margin   */
+  --card-pad-x: clamp(1.5rem, 10.5vw, 9.5rem); /* card inner padding x */
+  --card-pad-top: clamp(1.25rem, 6.8vh, 4.6rem); /* card → header        */
+  --card-pad-bottom: clamp(1rem, 4.2vh, 2.9rem); /* footer → card bottom */
+
+  /* ── Shape ─────────────────────────────────────────────── */
+  --radius-card: clamp(4px, 0.55vw, 8px);
+  --radius-pill: 999px;
+
+  /* ── Elevation ─────────────────────────────────────────── */
+  --shadow-card: 0 2px 24px rgba(17, 17, 18, 0.05);
+  --shadow-pill: 0 6px 18px rgba(17, 17, 18, 0.1);
+  --shadow-cta: 0 10px 24px rgba(17, 17, 18, 0.22);
+
+  /* ── Motion ────────────────────────────────────────────── */
+  --transition-fast: 150ms ease;
+  --transition-slow: 300ms ease;
+  --ease-out-soft: cubic-bezier(0.22, 1, 0.36, 1);
+
+  /* ── Layout ────────────────────────────────────────────── */
+  --z-header: 20;
+  --z-scene: 10;
+  --z-loader: 50;
+}

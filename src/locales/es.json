@@ -1,0 +1,40 @@
+{
+  "meta": {
+    "title": "Botole 3D Premium",
+    "description": "Botole — Botella de agua para beber. Ligera, compacta, hidratación premium en negro mate."
+  },
+  "nav": {
+    "home": "Inicio",
+    "product": "Producto",
+    "pricing": "Precios",
+    "contact": "Contacto",
+    "ariaLabel": "Navegación principal"
+  },
+  "hero": {
+    "title1": "Botella",
+    "title2": "de Agua",
+    "title3": "para Beber",
+    "sub": "El tapón es simple, sin detalles superfluos, y puedes beber desde cualquier ángulo con comodidad, como si bebieras de un vaso o una taza.",
+    "cta": "Empezar ahora",
+    "play": "Reproducir vídeo"
+  },
+  "scene": {
+    "bottleAlt": "Botella de agua Botole negra mate con tapón de metal cepillado",
+    "slide": "Ir a la diapositiva {{index}}"
+  },
+  "products": {
+    "ariaLabel": "Gama de productos",
+    "waterBottle": { "name": "Botella de Agua", "sub": "Hacemos botellas de agua de calidad" },
+    "travelTumbler": { "name": "Termo de Viaje", "sub": "Ofrecemos termos de viaje de calidad" },
+    "activeTumbler": { "name": "Termo Deportivo", "sub": "Ofrecemos termos deportivos de calidad" }
+  },
+  "footer": {
+    "scrollDown": "Desplázate",
+    "notePre": "Ligera y compacta, la",
+    "noteStrong": "BOTELLA DE AGUA",
+    "notePost": "te permite hidratarte sin esfuerzo. Hecha de copoliéster transparente de alta calidad",
+    "discover1": "Descubrir",
+    "discover2": "más",
+    "discoverAria": "Descubrir más sobre Botole"
+  }
+}

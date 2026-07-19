@@ -1,0 +1,40 @@
+{
+  "meta": {
+    "title": "Botole 3D Premium",
+    "description": "Botole — Drinking Water Bottle. Lightweight, compact, premium matte-black hydration."
+  },
+  "nav": {
+    "home": "Home",
+    "product": "Product",
+    "pricing": "Pricing",
+    "contact": "Contact",
+    "ariaLabel": "Main navigation"
+  },
+  "hero": {
+    "title1": "Drinking",
+    "title2": "Water",
+    "title3": "Bottle",
+    "sub": "The cap is simple without excess details and you can drink from any angle pleasantly, like drinking out of a glass or mug.",
+    "cta": "Start Now",
+    "play": "Play video"
+  },
+  "scene": {
+    "bottleAlt": "Matte black Botole drinking water bottle with brushed-metal cap",
+    "slide": "Go to slide {{index}}"
+  },
+  "products": {
+    "ariaLabel": "Product range",
+    "waterBottle": { "name": "Water Bottle", "sub": "We make qualityful water bottle" },
+    "travelTumbler": { "name": "Travel Tumbler", "sub": "We provide qualityful travel tumbler" },
+    "activeTumbler": { "name": "Active Tumbler", "sub": "We provide qualityful active tumbler" }
+  },
+  "footer": {
+    "scrollDown": "Scroll Down",
+    "notePre": "Lightweight and compact",
+    "noteStrong": "WATER BOTTLE",
+    "notePost": "lets you hydrate effortlessly. Made of high quality transparent copolyester",
+    "discover1": "Discover",
+    "discover2": "More",
+    "discoverAria": "Discover more about Botole"
+  }
+}
