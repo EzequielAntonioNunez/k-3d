@@ -1,0 +1,44 @@
+name: Update visual snapshots
+
+# Manual-only: regenerates the Linux baselines used by the CI visual job and
+# commits them. Run this after an intentional design change (the CI visual
+# job will fail until the baselines are refreshed).
+on:
+  workflow_dispatch:
+
+jobs:
+  update-snapshots:
+    name: Regenerate visual baselines
+    runs-on: ubuntu-latest
+    permissions: contents: write
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Install Chromium
+        run: npx playwright install --with-deps chromium
+
+      - name: Update snapshots
+        run: npx playwright test --project=visual --update-snapshots
+
+      - name: Commit and push baselines
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add e2e/__snapshots__
+          if git diff --cached --quiet; then
+            echo "Snapshots already up to date"
+          else
+            git commit -m "test: update visual baselines"
+            git push
+          fi

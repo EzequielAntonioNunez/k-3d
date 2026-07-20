@@ -40,7 +40,7 @@ Regla de oro: si el código y este plan discrepan, **o se corrige el código o s
 
 - 🔶 **PWA**: falta iconos 192/512 del manifest, estrategia de actualización del SW y página offline.
 - 🔶 **SEO**: falta JSON-LD (`Product`), meta Open Graph/Twitter y og-image 1200×630.
-- 🔶 **CI**: sin visual regression, sin Lighthouse budgets, sin `npm audit`.
+- 🔶 **CI**: visual regression ✅ (Fase 2); sin Lighthouse budgets, sin `npm audit`.
 
 ### Pendiente
 
@@ -83,11 +83,13 @@ Cada fase solo se da por cerrada cuando su "Hecho cuando" se verifica con comand
 - **Resultado**: 13 unit tests en 7 archivos, cobertura 96.2% líneas / 95.8% funciones ✅ · Playwright 4/4, dos pasadas consecutivas con `--retries=0` ✅.
 - Nota: el test de arrastre espera escena estática con `expect(...).toPass()` (fuentes + shaders) antes de comparar píxeles — evita flakes por timing.
 
-### Fase 2 — Visual regression en CI
-- [ ] `toHaveScreenshot()` en Playwright para `/en` (viewport 1470×1092, `maxDiffPixelRatio: 0.02`, animaciones congeladas vía `reducedMotion: 'reduce'`).
-- [ ] Snapshots versionados en `e2e/__snapshots__/`; actualización solo vía `--update-snapshots` explícito.
-- [ ] Proyecto CI separado (o job) que falle el PR si la home se desvía.
-- **Hecho cuando**: un cambio de 1px en `--text-h1` rompe el build de CI y un build sin cambios visuales pasa.
+### Fase 2 — Visual regression en CI ✅ (2026-07-20)
+- [x] `toHaveScreenshot()` en Playwright para `/en` (viewport 1470×1092, animaciones congeladas vía `page.emulateMedia({ reducedMotion: 'reduce' })` — el runner de Playwright 1.61 **ignora** la opción de contexto `reducedMotion`; hay que emularla por página).
+- [x] Dos aserciones calibradas con medición real: página completa con el canvas enmascarado (`maxDiffPixels: 250` → un cambio de +1px en `--text-h1` falla con 838px) y escena 3D (`maxDiffPixelRatio: 0.05` → tolera el ruido GPU entre sesiones, medido en ~4.3k px, pero caza regresiones groseras).
+- [x] Textura del tapón determinista (PRNG mulberry32 con seed en `Bottle3D.jsx`) — antes usaba `Math.random()` y rompería los snapshots.
+- [x] Snapshots versionados en `e2e/__snapshots__/` (win32 + linux, esta última generada con Docker `mcr.microsoft.com/playwright`); actualización solo vía `--update-snapshots` explícito o workflow manual `update-snapshots.yml`.
+- [x] Job `visual` en `ci.yml` (Chromium con `--with-deps`, artefacto `visual-diff` en fallo); triggers de CI corregidos a `main` + `master` (antes solo `main` y el repo usa `master` → CI nunca corría).
+- **Resultado**: 1px en `--text-h1` rompe el test ✅ · build sin cambios pasa ✅ (local, Docker linux y CI).
 
 ### Fase 3 — Assets reales
 - [ ] Generar `favicon.ico` (16/32/48), `apple-touch-icon.png` (180×180), `icon-192.png`, `icon-512.png` desde `favicon.svg` (script con `sharp` en `scripts/` o realfavicongenerator) y referenciarlos en `index.html` + `manifest.json`.

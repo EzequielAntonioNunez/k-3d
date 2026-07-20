@@ -57,14 +57,25 @@ const buildCapGeometry = () => {
   return new THREE.LatheGeometry(pts, 128)
 }
 
+/* Deterministic PRNG (mulberry32): the brushed texture must be identical on
+   every load, or visual-regression snapshots would diff on the cap pixels. */
+const mulberry32 = (seed) => () => {
+  seed |= 0
+  seed = (seed + 0x6d2b79f5) | 0
+  let t = Math.imul(seed ^ (seed >>> 15), 1 | seed)
+  t = (t + Math.imul(t ^ (t >>> 7), 61 | t)) ^ t
+  return ((t ^ (t >>> 14)) >>> 0) / 4294967296
+}
+
 /* Vertically-brushed roughness for the metal cap, generated locally. */
 const makeBrushedTexture = () => {
   const canvas = document.createElement('canvas')
   canvas.width = 512
   canvas.height = 64
   const ctx = canvas.getContext('2d')
+  const rand = mulberry32(0xb0701e)
   for (let x = 0; x < canvas.width; x += 1) {
-    const v = 82 + Math.random() * 78
+    const v = 82 + rand() * 78
     ctx.fillStyle = `rgb(${v},${v},${v})`
     ctx.fillRect(x, 0, 1, canvas.height)
   }
