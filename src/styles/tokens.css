@@ -8,8 +8,6 @@
   --color-muted: #828282; /* secondary copy                   */
   --color-muted-light: #9b9b9b; /* tertiary copy (list subs)  */
   --color-hairline: #e3e4e6; /* dividers                       */
-  --color-dot: #c9c9c9; /* inactive slider dots               */
-  --color-dot-active: #f2f2f2; /* active slider dot            */
   --color-on-dark: #f5f5f5; /* text on dark buttons           */
   --color-focus: #111112; /* focus ring                       */
 

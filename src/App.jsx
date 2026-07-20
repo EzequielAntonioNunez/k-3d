@@ -9,7 +9,6 @@ import { HeroFooter } from './components/layout/HeroFooter'
 import { MainGrid } from './components/layout/MainGrid'
 import { ProductList } from './components/layout/ProductList'
 import { SiteHeader } from './components/layout/SiteHeader'
-import { SliderDots } from './components/layout/SliderDots'
 
 const MainApp = () => {
   const { lang } = useParams()
@@ -38,7 +37,6 @@ const MainApp = () => {
             <ErrorBoundary fallback={<SceneFallback />}>
               <SceneSetup />
             </ErrorBoundary>
-            <SliderDots />
           </div>
           <ProductList />
         </section>

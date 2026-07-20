@@ -1,6 +1,6 @@
 # Botole 3D — Plan de Arquitectura e Implementación
 
-> Documento vivo. Última actualización: 2026-07-19 (tras pase pixel-perfect).
+> Documento vivo. Última actualización: 2026-07-20 (slider dots eliminados y botella reescalada, ver ADR 005).
 > Leyenda de estado: ✅ hecho · 🔶 parcial · ❌ pendiente · 📝 decisión registrada (ADR)
 
 ---
@@ -34,11 +34,10 @@ Regla de oro: si el código y este plan discrepan, **o se corrige el código o s
 - ✅ PWA vía `vite-plugin-pwa` (generateSW, precache de assets).
 - ✅ CI básico (`.github/workflows/ci.yml`): lint → unit tests → build.
 - ✅ Commit inicial `c43fceb`; hooks de pre-commit y commit-msg operativos.
-- ✅ Verificación actual: `npm run lint` ✅ · `vitest run` ✅ · `npm run build` ✅ · Playwright chromium 2/2 ✅.
+- ✅ Verificación actual: `npm run lint` ✅ · `vitest run --coverage` ✅ (96.2% líneas) · `npm run build` ✅ · Playwright chromium 4/4 ✅ (2 pasadas `--retries=0`).
 
 ### Parcial
 
-- 🔶 **Tests**: 1 unit test + 2 E2E. Sin umbrales de cobertura ni tests de hooks/store/componentes aislados.
 - 🔶 **PWA**: falta iconos 192/512 del manifest, estrategia de actualización del SW y página offline.
 - 🔶 **SEO**: falta JSON-LD (`Product`), meta Open Graph/Twitter y og-image 1200×630.
 - 🔶 **CI**: sin visual regression, sin Lighthouse budgets, sin `npm audit`.
@@ -62,13 +61,14 @@ Regla de oro: si el código y este plan discrepan, **o se corrige el código o s
 - 📝 **002 — Botella procedural en vez de GLTF**: el plan pedía un `.glb` gratuito con Draco. No se encontró asset con la silueta exacta de la referencia y licencia clara → geometría procedural (`LatheGeometry`), cero bytes de descarga. Draco/meshopt quedan descartados salvo que entre un modelo real.
 - 📝 **003 — Poppins en vez de Inter**: la referencia usa grotesca geométrica; Poppins (OFL, Google Fonts) casa mejor. Self-hosted, subset pendiente (§5).
 - 📝 **004 — OrbitControls + escena fija**: el follow-passive del ratón se eliminó al hacer la botella arrastrable (conflicto de input). Zoom/pan desactivados para proteger el layout.
+- 📝 **005 — Sin slider dots y botella reescalada**: los dots de la referencia no tenían función real y la botella se cortaba al orbitar (la sombra llegaba al borde del canvas). Eliminados dots + store, escala 1.52 → 1.4, target de cámara bajado.
 - 📝 Workspace real: `Documents/Repositorios/Projects/agy/botole-app` (no la ruta scratch de `.gemini` que decía el plan original).
 
 ---
 
 ## 2. ADRs obligatorios
 
-Todo cambio de rumbo se registra en `docs/adr/NNN-titulo.md` con: contexto, opciones, decisión, consecuencias. Pendientes de crear: **002** (procedural), **003** (Poppins), **004** (OrbitControls). Formato: el de `001-use-biome.md`.
+Todo cambio de rumbo se registra en `docs/adr/NNN-titulo.md` con: contexto, opciones, decisión, consecuencias. Creados: **001**–**005**. Formato: el de `001-use-biome.md`.
 
 ---
 
@@ -76,11 +76,12 @@ Todo cambio de rumbo se registra en `docs/adr/NNN-titulo.md` con: contexto, opci
 
 Cada fase solo se da por cerrada cuando su "Hecho cuando" se verifica con comandos reales.
 
-### Fase 1 — Calidad de tests (siguiente)
-- [ ] Umbrales en `vitest.config.js`: `coverage: { lines: 70, functions: 70, statements: 70 }` en `src/**` excluyendo `components/3d` (WebGL no testeable en jsdom).
-- [ ] Tests unitarios: `useStore`, `i18n` (cambia idioma y persiste), `Button` (render + props), `ErrorBoundary` (renderiza fallback ante error), `isWebGLAvailable` (mock de canvas).
-- [ ] E2E adicionales: ruta `/es` renderiza en español; fallback 2D aparece con WebGL deshabilitado (`page.route` + context sin WebGL).
-- **Hecho cuando**: `npx vitest run --coverage` pasa con umbrales verdes y `npx playwright test` 4/4.
+### Fase 1 — Calidad de tests ✅ (2026-07-19)
+- [x] Umbrales en `vitest.config.js`: `coverage: { lines: 70, functions: 70, statements: 70 }` en `src/**` excluyendo `components/3d` (WebGL no testeable en jsdom).
+- [x] Tests unitarios: `i18n` (cambia idioma), `Button` (variantes + onClick, use-sound mockeado), `ErrorBoundary` (fallback ante error), `isWebGLAvailable` (contexto mockeado), `useResponsive`, `Typography` y `App` (render completo + redirect). (Los tests de `useStore`/dots se retiraron con el slider, ver ADR 005.)
+- [x] E2E adicionales: ruta `/es` renderiza en español; fallback 2D aparece con WebGL deshabilitado (`getContext` stubbeado a `null`).
+- **Resultado**: 13 unit tests en 7 archivos, cobertura 96.2% líneas / 95.8% funciones ✅ · Playwright 4/4, dos pasadas consecutivas con `--retries=0` ✅.
+- Nota: el test de arrastre espera escena estática con `expect(...).toPass()` (fuentes + shaders) antes de comparar píxeles — evita flakes por timing.
 
 ### Fase 2 — Visual regression en CI
 - [ ] `toHaveScreenshot()` en Playwright para `/en` (viewport 1470×1092, `maxDiffPixelRatio: 0.02`, animaciones congeladas vía `reducedMotion: 'reduce'`).
@@ -108,12 +109,12 @@ Cada fase solo se da por cerrada cuando su "Hecho cuando" se verifica con comand
 
 ### Fase 6 — Observabilidad
 - [ ] `@sentry/react` instalado; init en `config/sentry.js` con `VITE_SENTRY_DSN` (documentado en `.env.example`); release = versión de `package.json`; sourcemaps subidos en CI (secreto `SENTRY_AUTH_TOKEN`).
-- [ ] Analítica: elegir Plausible o GA4; **banner de consentimiento GDPR** antes de cargar el script; eventos: `cta_start`, `bottle_drag`, `slide_change`, `discover_click`.
+- [ ] Analítica: elegir Plausible o GA4; **banner de consentimiento GDPR** antes de cargar el script; eventos: `cta_start`, `bottle_drag`, `discover_click`.
 - **Hecho cuando**: un error forzado en staging aparece en Sentry con sourcemap legible, y la analítica no carga sin consentimiento.
 
 ### Fase 7 — Accesibilidad (WCAG 2.2 AA)
 - [ ] Auditoría de contraste medida (texto ≥ 4.5:1, `--color-muted-light` incluido).
-- [ ] Teclado: todos los controles alcanzables con foco visible (nav, CTA, dots, discover).
+- [ ] Teclado: todos los controles alcanzables con foco visible (nav, CTA, discover).
 - [ ] Pase con NVDA/VoiceOver: landmarks, `role="img"` del visor 3D con su `aria-label` traducido.
 - **Hecho cuando**: checklist WCAG en `docs/` marcada y axe-core (Playwright) sin violaciones serious/critical.
 

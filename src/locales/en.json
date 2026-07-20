@@ -20,8 +20,7 @@
   },
   "scene": {
     "bottleAlt": "Matte black Botole drinking water bottle with brushed-metal cap",
-    "interactive": "Interactive 3D model of the Botole bottle. Drag to rotate it.",
-    "slide": "Go to slide {{index}}"
+    "interactive": "Interactive 3D model of the Botole bottle. Drag to rotate it."
   },
   "products": {
     "ariaLabel": "Product range",

@@ -20,8 +20,7 @@
   },
   "scene": {
     "bottleAlt": "Botella de agua Botole negra mate con tapón de metal cepillado",
-    "interactive": "Modelo 3D interactivo de la botella Botole. Arrastra para girarla.",
-    "slide": "Ir a la diapositiva {{index}}"
+    "interactive": "Modelo 3D interactivo de la botella Botole. Arrastra para girarla."
   },
   "products": {
     "ariaLabel": "Gama de productos",

@@ -38,8 +38,9 @@ export const SceneSetup = () => {
       >
         <ambientLight intensity={0.5} />
         <Suspense fallback={null}>
-          {/* Scaled up and offset so the bottle base stays pinned on the shadow */}
-          <group scale={1.52} position={[0, 0.054, 0]}>
+          {/* Scaled up and offset so the bottle base stays pinned on the shadow.
+              Scale kept at 1.4 so the cap/base don't clip the canvas edge while orbiting. */}
+          <group scale={1.4} position={[0, -0.116, 0]}>
             <Bottle3D reduceMotion={reduceMotion} />
           </group>
           {/* Local studio environment — no network fetches */}
@@ -71,17 +72,21 @@ export const SceneSetup = () => {
             />
           </Environment>
         </Suspense>
+        {/* Tighter blur keeps the shadow blob from reaching the canvas bottom edge,
+            where it used to be sliced off right above the footer text */}
         <ContactShadows
           position={[0, -2.12, 0]}
           opacity={0.34}
           scale={8}
-          blur={2.8}
+          blur={2}
           far={3}
           resolution={512}
           color="#0a0a0a"
           frames={reduceMotion ? 1 : Number.POSITIVE_INFINITY}
         />
-        {/* Drag to orbit the bottle; zoom/pan stay disabled to protect the layout */}
+        {/* Drag to orbit the bottle; zoom/pan stay disabled to protect the layout.
+            Target below origin shifts the scene up so the shadow fades out
+            before the canvas bottom edge (no visible slice above the footer). */}
         <OrbitControls
           makeDefault
           enableDamping
@@ -89,6 +94,7 @@ export const SceneSetup = () => {
           rotateSpeed={0.9}
           enableZoom={false}
           enablePan={false}
+          target={[0, -0.2, 0]}
           minPolarAngle={Math.PI / 2 - 0.85}
           maxPolarAngle={Math.PI / 2 + 0.4}
         />
