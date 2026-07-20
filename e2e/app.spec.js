@@ -21,10 +21,16 @@ test('Bottle rotates when the scene is dragged', async ({ page }) => {
   const startX = box.x + box.width * 0.35
   const startY = box.y + box.height * 0.6
 
+  // Wait until the scene is provably static (fonts swapped, shaders warm),
+  // so the only thing that can change pixels afterwards is the drag.
+  await expect(async () => {
+    const a = await scene.screenshot()
+    await page.waitForTimeout(400)
+    const b = await scene.screenshot()
+    expect(a.equals(b)).toBe(true)
+  }).toPass({ timeout: 10000, intervals: [500, 1000] })
+
   const before = await scene.screenshot()
-  const still = await scene.screenshot()
-  // Sanity check: with reduced motion the scene is static when untouched.
-  expect(before.equals(still)).toBe(true)
 
   await page.mouse.move(startX, startY)
   await page.mouse.down()
@@ -35,4 +41,22 @@ test('Bottle rotates when the scene is dragged', async ({ page }) => {
 
   const after = await scene.screenshot()
   expect(before.equals(after)).toBe(false)
+})
+
+test('Spanish route renders localized content', async ({ page }) => {
+  await page.goto('/es')
+  await expect(page).toHaveURL(/.*\/es/)
+  await expect(page.locator('html')).toHaveAttribute('lang', 'es')
+  await expect(page.locator('#hero-title')).toContainText('Botella')
+  await expect(page.getByRole('button', { name: 'Empezar ahora' })).toBeVisible()
+})
+
+test('shows the 2D fallback when WebGL is unavailable', async ({ page }) => {
+  // Simulate a device without any WebGL support.
+  await page.addInitScript(() => {
+    HTMLCanvasElement.prototype.getContext = () => null
+  })
+  await page.goto('/')
+  await expect(page.getByRole('img', { name: /Matte black Botole/ })).toBeVisible()
+  await expect(page.locator('canvas')).toHaveCount(0)
 })
